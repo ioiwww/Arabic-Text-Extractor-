@@ -18,6 +18,9 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.9'
+    - name: Install Python Requirements
+      run: |
+        pip install pdfminer.six pdf2image pytesseract python-docx
 
     - name: Install System Dependencies
       run: |
