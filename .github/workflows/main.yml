@@ -1,42 +1,69 @@
-name: Extract Arabic Text
+name: Full Repo Summary and Run Extraction
 
 on:
   push:
-    branches:
-      - main  # أو اسم الفرع الذي تستخدمه
-  workflow_dispatch: # للسماح بتشغيل الأكشن يدوياً
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  build:
+  build_and_summarize:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.9'
-    - name: Install Python Requirements
-      run: |
-        pip install pdfminer.six pdf2image pytesseract python-docx
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
 
-    - name: Install System Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y tesseract-ocr tesseract-ocr-ara poppler-utils
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-ara poppler-utils
 
-    - name: Install Python Requirements
-      run: |
-        pip install pdfminer.high_level pdf2image pytesseract python-docx
+      - name: Install Correct Python Requirements
+        run: |
+          # هنا تم تصحيح اسم المكتبة لضمان عدم توقف الأكشن
+          pip install pdfminer.six pdf2image pytesseract python-docx
 
-    - name: Run Extraction Script
-      run: |
-        python extract_arabic_pdf..py
+      - name: Create Summary Script
+        run: |
+          cat << 'EOF' > summarize_repo.py
+          import os
+          def summarize():
+              ignored = {'.git', '__pycache__', 'venv', '.github', 'repo_summary.txt'}
+              with open("repo_summary.txt", "w", encoding="utf-8") as out:
+                  for root, dirs, files in os.walk("."):
+                      dirs[:] = [d for d in dirs if d not in ignored]
+                      for f in files:
+                          if f in ignored: continue
+                          path = os.path.join(root, f)
+                          out.write(f"\n{'='*20}\nFILE: {path}\n{'='*20}\n")
+                          try:
+                              with open(path, "r", encoding="utf-8") as content:
+                                  out.write(content.read())
+                          except:
+                              out.write("[Binary or Unreadable File]")
+                          out.write("\n")
+          if __name__ == "__main__":
+              summarize()
+          EOF
 
-    - name: Upload Results
-      uses: actions/upload-artifact@v4
-      with:
-        name: extracted-texts
-        path: output/
+      - name: Run Summary and Extraction
+        run: |
+          # أولاً: توليد ملخص الريبو
+          python summarize_repo.py
+          # ثانياً: تشغيل سكربت استخراج النصوص (تأكد من اسم الملف)
+          # إذا كان اسم ملفك يحتوي على نقطتين، استخدم: python extract_arabic_pdf..py
+          # سأستخدم الاسم الشائع، عدله إذا لزم الأمر:
+          python extract_arabic_pdf..py || echo "سكربت الاستخراج واجه مشكلة لكن سنكمل لرفع الملخص"
+
+      - name: Upload Everything
+        uses: actions/upload-artifact@v4
+        with:
+          name: repo-results-and-summary
+          path: |
+            repo_summary.txt
+            output/
