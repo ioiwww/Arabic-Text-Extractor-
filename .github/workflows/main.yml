@@ -1,0 +1,39 @@
+name: Extract Arabic Text
+
+on:
+  push:
+    branches:
+      - main  # أو اسم الفرع الذي تستخدمه
+  workflow_dispatch: # للسماح بتشغيل الأكشن يدوياً
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.9'
+
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y tesseract-ocr tesseract-ocr-ara poppler-utils
+
+    - name: Install Python Requirements
+      run: |
+        pip install pdfminer.high_level pdf2image pytesseract python-docx
+
+    - name: Run Extraction Script
+      run: |
+        python extract_arabic_pdf..py
+
+    - name: Upload Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: extracted-texts
+        path: output/
