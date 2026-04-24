@@ -1,0 +1,47 @@
+name: Export Repo Content to Text
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  export_to_txt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Create Summary Script
+        run: |
+          cat << 'EOF' > summarize.py
+          import os
+          def run_summary():
+              # الأشياء اللي ما بدنا وجع راس منها بالتقرير
+              ignored = {'.git', '.github', '__pycache__', 'venv', 'repo_contents.txt'}
+              with open("repo_contents.txt", "w", encoding="utf-8") as out:
+                  out.write("=== تقرير كامل لمحتويات المستودع ===\n")
+                  for root, dirs, files in os.walk("."):
+                      dirs[:] = [d for d in dirs if d not in ignored]
+                      for f in files:
+                          if f in ignored: continue
+                          full_path = os.path.join(root, f)
+                          out.write(f"\n\n{'='*30}\nFILE: {full_path}\n{'='*30}\n")
+                          try:
+                              with open(full_path, "r", encoding="utf-8") as content:
+                                  out.write(content.read())
+                          except Exception as e:
+                              out.write(f"[تعذر قراءة الملف أو ملف ثنائي: {e}]")
+          if __name__ == "__main__":
+              run_summary()
+          EOF
+
+      - name: Generate Text File
+        run: python summarize.py
+
+      - name: Upload Repository Text
+        uses: actions/upload-artifact@v4
+        with:
+          name: Full-Repo-Content
+          path: repo_contents.txt
