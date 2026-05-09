@@ -1,0 +1,6 @@
+pdfminer.six
+pdf2image
+pytesseract
+python-docx
+arabic-reshaper
+python-bidi
