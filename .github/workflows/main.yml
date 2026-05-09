@@ -2,16 +2,23 @@ name: Extract and Fix Arabic PDFs
 
 on:
   push:
-    
-  workflow_dispatch: # يسمح لك بتشغيله يدوياً
+    branches:
+      - main  # أو اسم الفرع الأساسي عندك
+  workflow_dispatch: # هاد اللي بيسمحلك تشغله يدوياً على الملفات الموجودة
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    # حل مشكلة الـ 403 (Permission Denied)
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # عشان يسحب كل الملفات بوضوح
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -34,6 +41,12 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
+        
+        # التأكد من إضافة مجلد output حتى لو كان جديد
         git add output/
-        git commit -m "Add extracted text and docx files" || exit 0
-        git push
+        
+        # الالتزام بالتغييرات (Commit)
+        git commit -m "Auto-extracted Arabic text from existing PDFs" || echo "No changes to commit"
+        
+        # الرفع باستخدام التوكن التلقائي للأكشن
+        git push origin HEAD
