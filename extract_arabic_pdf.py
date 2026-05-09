@@ -1,91 +1,65 @@
 import os
-import re
 import pytesseract
-from pdfminer.high_level import extract_text
 from pdf2image import convert_from_path
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
-import arabic_reshaper
-# ألغينا استيراد bidi لأنها هي سبب القلب الزائد
 
+# المجلدات
 INPUT_FOLDER = "pdfs"
 OUTPUT_FOLDER = "output"
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-# نمط اكتشاف اللغة العربية
-arabic_pattern = re.compile(r'[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]+')
+def process_pdf_with_ocr(pdf_path):
+    """
+    هذا التابع بيحول الـ PDF لصور وبيقرأها كأنها عيون بشرية
+    وهاد هو الحل الوحيد للملفات اللي نصها الداخلي مشوه
+    """
+    print(f"جاري المعالجة البصرية (OCR) لملف: {os.path.basename(pdf_path)}")
+    
+    # تحويل الصفحات لصور بدقة عالية (300 DPI)
+    pages = convert_from_path(pdf_path, dpi=300)
+    
+    extracted_lines = []
+    for page in pages:
+        # استخدام Tesseract لقراءة الصورة باللغة العربية
+        page_text = pytesseract.image_to_string(page, lang="ara")
+        
+        # تنظيف النص المستخرج
+        for line in page_text.split('\n'):
+            clean_line = line.strip()
+            if clean_line:
+                extracted_lines.append(clean_line)
+                
+    return extracted_lines
 
-def fix_arabic_text(text):
-    if not text.strip():
-        return ""
-    # "لحم" الحروف ببعضها لتبدو كلمات صحيحة
-    # سنلغي استخدام get_display هنا لترك المتصفح أو الوورد يحدد الاتجاه
-    reshaped_text = arabic_reshaper.reshape(text)
-    return reshaped_text
-
-def extract_arabic_lines(text):
-    lines = text.split("\n")
-    arabic_lines = []
-    for line in lines:
-        if arabic_pattern.search(line):
-            # نصلح شكل الحروف فقط
-            arabic_lines.append(fix_arabic_text(line.strip()))
-    return arabic_lines
-
-def extract_pdf_text(pdf):
-    try:
-        return extract_text(pdf)
-    except:
-        return ""
-
-def extract_scanned_text(pdf):
-    # تحويل الـ PDF لصور ومعالجتها بـ OCR
-    try:
-        pages = convert_from_path(pdf)
-        text = ""
-        for page in pages:
-            text += pytesseract.image_to_string(page, lang="ara") + "\n"
-        return text
-    except Exception as e:
-        print(f"Error in OCR: {e}")
-        return ""
-
+# دورة المعالجة الرئيسية
 for file in os.listdir(INPUT_FOLDER):
-    if not file.endswith(".pdf"): continue
+    if not file.endswith(".pdf"):
+        continue
     
     pdf_path = os.path.join(INPUT_FOLDER, file)
-    print(f"Processing: {file}")
+    base_name = os.path.splitext(file)[0]
 
-    # محاولة استخراج النص الرقمي
-    text = extract_pdf_text(pdf_path)
-    
-    # إذا النص قليل أو غير مفهوم نستخدم الـ OCR
-    if len(text.strip()) < 200:
-        print("Using OCR...")
-        text = extract_scanned_text(pdf_path)
+    # استخراج النص عبر الصور حصراً لضمان عدم تشوه الحروف
+    lines = process_pdf_with_ocr(pdf_path)
 
-    arabic_lines = extract_arabic_lines(text)
-    base = os.path.splitext(file)[0]
-    
-    # 1. حفظ ملف TXT
-    txt_file = os.path.join(OUTPUT_FOLDER, base + "_arabic.txt")
-    with open(txt_file, "w", encoding="utf-8") as f:
-        # هنا قد نحتاج لقلب الاتجاه للعرض في Notepad فقط
-        f.write("\n".join(arabic_lines))
-
-    # 2. حفظ ملف DOCX (وهو الأهم للتنسيق)
-    docx_file = os.path.join(OUTPUT_FOLDER, base + "_arabic.docx")
+    # 1. حفظ ملف Word (الأفضل للعربي)
     doc = Document()
-    
-    for line in arabic_lines:
+    for line in lines:
         p = doc.add_paragraph()
-        # إضافة النص وتحديد المحاذاة لليمين
+        p.alignment = WD_ALIGN_PARAGRAPH.RIGHT # محاذاة لليمين
         run = p.add_run(line)
-        run.font.size = Pt(14)
-        p.alignment = WD_ALIGN_PARAGRAPH.RIGHT 
+        run.font.size = Pt(13)
         
-    doc.save(docx_file)
-    print(f"Saved: {base}")
+    docx_path = os.path.join(OUTPUT_FOLDER, f"{base_name}_clean.docx")
+    doc.save(docx_path)
 
-print("Done!")
+    # 2. حفظ ملف نصي TXT
+    txt_path = os.path.join(OUTPUT_FOLDER, f"{base_name}_clean.txt")
+    with open(txt_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+
+    print(f"تم الحفظ بنجاح: {base_name}_clean")
+
+print("\nانتهت العملية! جرب تفتح ملف الـ Word الآن.")
