@@ -4,17 +4,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Linkit Lens</title>
 
 <style>
-
 :root{
     --primary:#2563eb;
     --success:#22c55e;
     --danger:#ef4444;
     --dark:#1e293b;
     --bg:#f8fafc;
+    --muted:#64748b;
+    --line:#e2e8f0;
 }
 
 *{
@@ -64,7 +64,7 @@ header h1{
 }
 
 header p{
-    color:#64748b;
+    color:var(--muted);
     font-size:16px;
 }
 
@@ -86,7 +86,7 @@ header p{
 }
 
 .upload-section p{
-    color:#64748b;
+    color:var(--muted);
     margin-bottom:25px;
 }
 
@@ -110,14 +110,17 @@ header p{
 .btn:disabled{
     opacity:.6;
     cursor:not-allowed;
+    transform:none;
 }
 
 .btn-success{
     background:var(--success);
+    box-shadow:0 6px 15px rgba(34,197,94,.18);
 }
 
 .btn-danger{
     background:var(--danger);
+    box-shadow:0 6px 15px rgba(239,68,68,.18);
 }
 
 .status{
@@ -142,13 +145,37 @@ header p{
     width:0%;
     height:100%;
     background:linear-gradient(90deg,#2563eb,#60a5fa);
-    transition:width .2s ease;
+    transition:width .15s linear;
+}
+
+.progress-meta{
+    margin-top:10px;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    align-items:center;
 }
 
 .progress-text{
-    margin-top:10px;
     color:var(--primary);
     font-weight:bold;
+}
+
+.progress-subtext{
+    color:var(--muted);
+    font-size:13px;
+}
+
+.session-actions{
+    display:none;
+    justify-content:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:18px;
+}
+
+.session-actions .btn{
+    min-width:170px;
 }
 
 #processingArea{
@@ -186,30 +213,25 @@ textarea{
     height:350px;
     padding:18px;
     border-radius:14px;
-    border:1px solid #e2e8f0;
+    border:1px solid var(--line);
     font-size:16px;
     line-height:1.8;
     resize:vertical;
     margin-bottom:15px;
+    background:#fcfcfd;
 }
 
-.session-actions{
-    display:none;
-    justify-content:center;
-    gap:12px;
-    flex-wrap:wrap;
-    margin-top:18px;
-}
-
-.session-actions .btn{
-    min-width:170px;
+textarea:focus{
+    outline:none;
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(37,99,235,.08);
 }
 
 #countdown-timer{
+    color:var(--primary);
     font-weight:bold;
-    color:#2563eb;
+    font-size:20px;
 }
-
 </style>
 </head>
 
@@ -218,648 +240,383 @@ textarea{
 <div class="container">
 
 <header>
-
-<div class="logo">📄</div>
-
-<h1>Linkit Lens</h1>
-
-<p>
-ارفع ملف PDF وسيتم استخراجه ومعالجته تلقائياً
-</p>
-
+    <div class="logo">📄</div>
+    <h1>Linkit Lens</h1>
+    <p>ارفع ملف PDF وسيتم استخراجه ومعالجته تلقائياً</p>
 </header>
 
 <div class="upload-section">
 
-<div class="upload-icon">☁️</div>
+    <div class="upload-icon">☁️</div>
 
-<h2>رفع ملف PDF</h2>
+    <h2>رفع ملف PDF</h2>
 
-<p>
-يدعم المعالجة التلقائية بواسطة GitHub Actions
-</p>
+    <p>يدعم المعالجة التلقائية بواسطة GitHub Actions</p>
 
-<input
-    type="file"
-    id="pdfFile"
-    accept=".pdf"
-    style="display:none;"
->
+    <input
+        type="file"
+        id="pdfFile"
+        accept=".pdf"
+        style="display:none;"
+    >
 
-<button
-    class="btn"
-    onclick="document.getElementById('pdfFile').click()">
+    <button
+        class="btn"
+        onclick="document.getElementById('pdfFile').click()">
 
-📁 اختر ملف PDF
+        📁 اختر ملف PDF
 
-</button>
+    </button>
 
-<div
-    id="fileName"
-    style="margin-top:18px;color:#64748b;font-weight:bold;">
-</div>
+    <div
+        id="fileName"
+        style="margin-top:18px;color:#64748b;font-weight:bold;">
+    </div>
 
-<br>
+    <br>
 
-<button
-    id="uploadBtn"
-    class="btn btn-success"
-    onclick="uploadToGithub()"
-    style="display:none;margin-top:15px;">
+    <button
+        id="uploadBtn"
+        class="btn btn-success"
+        onclick="uploadToGithub()"
+        style="display:none;margin-top:15px;">
 
-🚀 رفع الملف وبدء المعالجة
+        🚀 رفع الملف وبدء المعالجة
 
-</button>
+    </button>
 
-<div id="uploadStatus" class="status"></div>
+    <div id="uploadStatus" class="status"></div>
 
-<div id="progressWrapper" class="progress-wrap">
+    <div id="progressWrapper" class="progress-wrap">
+        <div class="progress-bar-bg">
+            <div id="progressBar" class="progress-bar-fill"></div>
+        </div>
 
-<div class="progress-bar-bg">
+        <div class="progress-meta">
+            <div id="progressText" class="progress-text"></div>
+            <div id="speedText" class="progress-subtext"></div>
+            <div id="etaText" class="progress-subtext"></div>
+        </div>
+    </div>
 
-<div
-    id="progressBar"
-    class="progress-bar-fill">
-</div>
-
-</div>
-
-<div
-    id="progressText"
-    class="progress-text">
-</div>
-
-</div>
-
-<div
-    id="sessionButtons"
-    class="session-actions">
-
-<button
-    class="btn btn-danger"
-    onclick="cancelUpload()">
-
-✖ Cancel
-
-</button>
-
-<button
-    class="btn btn-success"
-    onclick="newSession()">
-
-🔄 New Session
-
-</button>
-
-</div>
+    <div id="sessionButtons" class="session-actions">
+        <button class="btn btn-danger" onclick="cancelUpload()">✖ Cancel</button>
+        <button class="btn btn-success" onclick="newSession()">🔄 New Session</button>
+    </div>
 
 </div>
 
 <div id="processingArea">
-
-<div class="loader"></div>
-
-<p style="font-size:18px;font-weight:bold;margin-bottom:10px;">
-جاري المعالجة...
-</p>
-
-<p style="color:#64748b;">
-
-سيتم جلب النتائج خلال
-
-<span id="countdown-timer">
-60
-</span>
-
-ثانية
-
-</p>
-
+    <div class="loader"></div>
+    <p style="font-size:18px;font-weight:bold;margin-bottom:10px;">جاري المعالجة...</p>
+    <p style="color:#64748b;">
+        سيتم جلب النتائج خلال
+        <span id="countdown-timer">60</span>
+        ثانية
+    </p>
 </div>
 
-<div
-    class="result-area"
-    id="resultArea">
-
-<h3 style="margin-bottom:15px;">
-📝 النص المستخرج:
-</h3>
-
-<textarea
-    id="outputBox"
-    placeholder="سيظهر النص هنا بعد انتهاء المعالجة..."></textarea>
-
-<button
-    class="btn btn-success"
-    onclick="copyText()">
-
-📋 نسخ النص المستخرج
-
-</button>
-
+<div class="result-area" id="resultArea">
+    <h3 style="margin-bottom:15px;">📝 النص المستخرج:</h3>
+    <textarea id="outputBox" placeholder="سيظهر النص هنا بعد انتهاء المعالجة..."></textarea>
+    <button class="btn btn-success" onclick="copyText()">📋 نسخ النص المستخرج</button>
 </div>
 
 </div>
 
 <script>
-
 let uploadCancelled = false;
 let countdownInterval = null;
-let uploadProgressInterval = null;
+let uploadXhr = null;
+let uploadStartedAt = 0;
+let currentFileSize = 0;
 
-const fileInput =
-document.getElementById("pdfFile");
+const fileInput = document.getElementById("pdfFile");
+const uploadBtn = document.getElementById("uploadBtn");
+const status = document.getElementById("uploadStatus");
 
-const uploadBtn =
-document.getElementById("uploadBtn");
+/* GitHub repository info */
+const GITHUB_TOKEN = "YOUR_GITHUB_TOKEN";
+const REPO_OWNER = "ioiwww";
+const REPO_NAME = "Arabic-Text-Extractor-";
+const FILE_PATH = "pdfs/s.pdf";
 
-const status =
-document.getElementById("uploadStatus");
+function formatBytes(bytes){
+    if(bytes === 0) return "0 B";
+    const units = ["B","KB","MB","GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(1024));
+    const value = bytes / Math.pow(1024, i);
+    return `${value.toFixed(value >= 10 || i === 0 ? 0 : 1)} ${units[i]}`;
+}
 
-/* GitHub */
+function formatSpeed(bytesPerSecond){
+    if(!isFinite(bytesPerSecond) || bytesPerSecond <= 0) return "—";
+    return `${formatBytes(bytesPerSecond)}/s`;
+}
 
-const p1 = "ghp_";
+function setProgress(pct, loadedBytes, totalBytes){
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    const speedText = document.getElementById("speedText");
+    const etaText = document.getElementById("etaText");
 
-const p2 = [
-"SrVgJdXy",
-"ZZJImo21",
-"mGpPLybt",
-"vn76fS1M",
-"5VS4"
-];
+    progressBar.style.width = `${pct}%`;
 
-const GITHUB_TOKEN =
-p1 + p2.join("");
+    progressText.innerText = `${pct}% • ${formatBytes(loadedBytes)} / ${formatBytes(totalBytes)}`;
 
-const REPO_OWNER =
-"ioiwww";
+    const elapsed = (Date.now() - uploadStartedAt) / 1000;
+    const speedBps = elapsed > 0 ? loadedBytes / elapsed : 0;
+    speedText.innerText = `Speed: ${formatSpeed(speedBps)}`;
 
-const REPO_NAME =
-"Arabic-Text-Extractor-";
-
-const FILE_PATH =
-"pdfs/s.pdf";
-
-/* اختيار الملف */
+    if(speedBps > 0 && totalBytes > loadedBytes){
+        const remainingBytes = totalBytes - loadedBytes;
+        const etaSec = Math.max(1, Math.round(remainingBytes / speedBps));
+        etaText.innerText = `ETA: ${etaSec} sec`;
+    }else{
+        etaText.innerText = "";
+    }
+}
 
 fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
 
-const file = fileInput.files[0];
+    if(file){
+        document.getElementById("fileName").innerText = "📄 " + file.name;
+        uploadBtn.style.display = "inline-block";
 
-if(file){
-
-document.getElementById("fileName").innerText =
-"📄 " + file.name;
-
-uploadBtn.style.display =
-"inline-block";
-
-status.style.color =
-"#2563eb";
-
-status.innerText =
-"الملف جاهز للرفع";
-
-}
-
+        status.style.color = "#2563eb";
+        status.innerText = "الملف جاهز للرفع";
+    }
 });
 
-/* رفع الملف */
-
 async function uploadToGithub(){
+    const file = fileInput.files[0];
 
-const file = fileInput.files[0];
+    if(!file){
+        alert("اختر ملف PDF أولاً");
+        return;
+    }
 
-if(!file){
+    uploadCancelled = false;
+    uploadBtn.disabled = true;
+    currentFileSize = file.size;
+    uploadStartedAt = Date.now();
 
-alert("اختر ملف PDF أولاً");
+    document.getElementById("progressWrapper").style.display = "block";
+    document.getElementById("sessionButtons").style.display = "flex";
 
-return;
+    document.getElementById("progressBar").style.width = "0%";
+    document.getElementById("progressText").innerText = `0% • 0 B / ${formatBytes(file.size)}`;
+    document.getElementById("speedText").innerText = "";
+    document.getElementById("etaText").innerText = "";
 
+    status.style.color = "#2563eb";
+    status.innerText = "⬆️ جاري تجهيز الملف...";
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = async () => {
+        const content = reader.result.split(",")[1];
+
+        try{
+            let sha = "";
+
+            const getFile = await fetch(
+                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
+                {
+                    headers:{
+                        "Authorization": `token ${GITHUB_TOKEN}`
+                    }
+                }
+            );
+
+            if(getFile.ok){
+                const fileData = await getFile.json();
+                sha = fileData.sha;
+            }
+
+            const bodyData = JSON.stringify({
+                message: "Upload PDF for OCR processing",
+                content: content,
+                sha: sha
+            });
+
+            uploadXhr = new XMLHttpRequest();
+
+            uploadXhr.open(
+                "PUT",
+                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`
+            );
+
+            uploadXhr.setRequestHeader(
+                "Authorization",
+                `token ${GITHUB_TOKEN}`
+            );
+            uploadXhr.setRequestHeader(
+                "Content-Type",
+                "application/json"
+            );
+
+            uploadXhr.upload.onprogress = function(event){
+                if(uploadCancelled) return;
+
+                if(event.lengthComputable){
+                    const percent = Math.round((event.loaded / event.total) * 100);
+                    setProgress(percent, event.loaded, event.total);
+                }
+            };
+
+            uploadXhr.onload = function(){
+                if(uploadCancelled) return;
+
+                if(uploadXhr.status >= 200 && uploadXhr.status < 300){
+                    setProgress(100, currentFileSize, currentFileSize);
+
+                    status.style.color = "#22c55e";
+                    status.innerText = "✅ تم رفع الملف بنجاح وبدأت المعالجة";
+
+                    startCountdown();
+                }else{
+                    status.style.color = "red";
+                    status.innerText = "❌ فشل الرفع";
+                    uploadBtn.disabled = false;
+                }
+            };
+
+            uploadXhr.onerror = function(){
+                if(uploadCancelled) return;
+
+                status.style.color = "red";
+                status.innerText = "❌ حدث خطأ أثناء الرفع";
+                uploadBtn.disabled = false;
+            };
+
+            uploadXhr.onabort = function(){
+                status.style.color = "#ef4444";
+                status.innerText = "❌ تم إلغاء العملية";
+                uploadBtn.disabled = false;
+            };
+
+            uploadXhr.send(bodyData);
+
+        }catch(error){
+            console.error(error);
+            status.style.color = "red";
+            status.innerText = "❌ حدث خطأ أثناء تجهيز الملف";
+            uploadBtn.disabled = false;
+        }
+    };
 }
-
-uploadCancelled = false;
-
-uploadBtn.disabled = true;
-
-document.getElementById(
-"progressWrapper"
-).style.display = "block";
-
-document.getElementById(
-"sessionButtons"
-).style.display = "flex";
-
-status.style.color = "#2563eb";
-
-status.innerText =
-"⬆️ جاري رفع الملف...";
-
-const reader =
-new FileReader();
-
-reader.readAsDataURL(file);
-
-reader.onload = async () => {
-
-const content =
-reader.result.split(',')[1];
-
-try{
-
-let sha = "";
-
-const getFile =
-await fetch(
-`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
-{
-headers:{
-"Authorization":
-`token ${GITHUB_TOKEN}`
-}
-}
-);
-
-if(getFile.ok){
-
-const fileData =
-await getFile.json();
-
-sha = fileData.sha;
-
-}
-
-let progress = 0;
-
-const progressBar =
-document.getElementById(
-"progressBar"
-);
-
-const progressText =
-document.getElementById(
-"progressText"
-);
-
-clearInterval(
-uploadProgressInterval
-);
-
-uploadProgressInterval =
-setInterval(() => {
-
-if(uploadCancelled){
-
-clearInterval(
-uploadProgressInterval
-);
-
-return;
-}
-
-if(progress < 90){
-
-progress += 2;
-
-if(progress > 90){
-progress = 90;
-}
-
-progressBar.style.width =
-progress + "%";
-
-const uploadedMB =
-((file.size * progress / 100)
-/1024 / 1024).toFixed(1);
-
-const totalMB =
-(file.size / 1024 / 1024)
-.toFixed(1);
-
-progressText.innerText =
-`${progress}% • ${uploadedMB} MB / ${totalMB} MB`;
-
-}
-
-},200);
-
-const response =
-await fetch(
-`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`,
-{
-method:"PUT",
-
-headers:{
-"Authorization":
-`token ${GITHUB_TOKEN}`,
-
-"Content-Type":
-"application/json"
-},
-
-body:JSON.stringify({
-
-message:
-"Upload PDF for OCR processing",
-
-content:content,
-
-sha:sha
-
-})
-}
-);
-
-clearInterval(
-uploadProgressInterval
-);
-
-if(uploadCancelled){
-
-status.style.color =
-"#ef4444";
-
-status.innerText =
-"❌ تم إلغاء العملية";
-
-uploadBtn.disabled =
-false;
-
-return;
-}
-
-if(response.ok){
-
-progressBar.style.width =
-"100%";
-
-progressText.innerText =
-"100% • Upload Complete";
-
-status.style.color =
-"#22c55e";
-
-status.innerText =
-"✅ تم رفع الملف بنجاح";
-
-startCountdown();
-
-}else{
-
-throw new Error(
-"Upload failed"
-);
-
-}
-
-}catch(error){
-
-console.error(error);
-
-status.style.color =
-"red";
-
-status.innerText =
-"❌ حدث خطأ أثناء الرفع";
-
-uploadBtn.disabled =
-false;
-
-}
-
-};
-
-}
-
-/* العد التنازلي */
 
 function startCountdown(){
+    document.getElementById("processingArea").style.display = "block";
 
-document.getElementById(
-"processingArea"
-).style.display = "block";
+    let seconds = 60;
+    const timer = document.getElementById("countdown-timer");
+    timer.innerText = seconds;
 
-let seconds = 60;
+    clearInterval(countdownInterval);
 
-const timer =
-document.getElementById(
-"countdown-timer"
-);
+    countdownInterval = setInterval(() => {
+        if(uploadCancelled){
+            clearInterval(countdownInterval);
+            return;
+        }
 
-timer.innerText = seconds;
+        seconds--;
+        timer.innerText = seconds;
 
-clearInterval(
-countdownInterval
-);
-
-countdownInterval =
-setInterval(() => {
-
-if(uploadCancelled){
-
-clearInterval(
-countdownInterval
-);
-
-return;
+        if(seconds <= 0){
+            clearInterval(countdownInterval);
+            fetchResults();
+        }
+    }, 1000);
 }
-
-seconds--;
-
-timer.innerText =
-seconds;
-
-if(seconds <= 0){
-
-clearInterval(
-countdownInterval
-);
-
-fetchResults();
-
-}
-
-},1000);
-
-}
-
-/* جلب النتائج */
 
 async function fetchResults(){
+    status.style.color = "#2563eb";
+    status.innerText = "📥 جاري جلب النص المستخرج...";
 
-status.style.color =
-"#2563eb";
+    try{
+        const response = await fetch(
+            `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/output/s_clean.txt?t=${Date.now()}`
+        );
 
-status.innerText =
-"📥 جاري جلب النص المستخرج...";
+        if(response.ok){
+            const text = await response.text();
 
-try{
+            document.getElementById("resultArea").style.display = "block";
+            document.getElementById("outputBox").value = text;
 
-const response =
-await fetch(
-`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/output/s_clean.txt?t=${new Date().getTime()}`
-);
-
-if(response.ok){
-
-const text =
-await response.text();
-
-document.getElementById(
-"resultArea"
-).style.display =
-"block";
-
-document.getElementById(
-"outputBox"
-).value = text;
-
-status.style.color =
-"#22c55e";
-
-status.innerText =
-"✅ تم جلب النص بنجاح";
-
-}else{
-
-status.style.color =
-"#f59e0b";
-
-status.innerText =
-"⏳ المعالجة لم تنتهِ بعد";
-
+            status.style.color = "#22c55e";
+            status.innerText = "✅ تم جلب النص بنجاح";
+        }else{
+            status.style.color = "#f59e0b";
+            status.innerText = "⏳ المعالجة لم تنتهِ بعد";
+        }
+    }catch(error){
+        console.error(error);
+        status.style.color = "red";
+        status.innerText = "❌ حدث خطأ أثناء جلب النتائج";
+    }
 }
-
-}catch(error){
-
-console.error(error);
-
-status.style.color =
-"red";
-
-status.innerText =
-"❌ حدث خطأ أثناء جلب النتائج";
-
-}
-
-}
-
-/* نسخ */
 
 function copyText(){
-
-const box =
-document.getElementById(
-"outputBox"
-);
-
-navigator.clipboard.writeText(
-box.value
-);
-
-alert(
-"📋 تم نسخ النص بنجاح"
-);
-
+    const box = document.getElementById("outputBox");
+    navigator.clipboard.writeText(box.value);
+    alert("📋 تم نسخ النص بنجاح");
 }
-
-/* إلغاء */
 
 function cancelUpload(){
+    uploadCancelled = true;
 
-uploadCancelled = true;
+    if(uploadXhr){
+        uploadXhr.abort();
+    }
 
-clearInterval(
-countdownInterval
-);
+    clearInterval(countdownInterval);
 
-clearInterval(
-uploadProgressInterval
-);
+    status.style.color = "#ef4444";
+    status.innerText = "❌ تم إلغاء العملية";
 
-status.style.color =
-"#ef4444";
-
-status.innerText =
-"❌ تم إلغاء العملية";
-
-uploadBtn.disabled =
-false;
-
-document.getElementById(
-"progressText"
-).innerText =
-"Cancelled";
-
+    uploadBtn.disabled = false;
+    document.getElementById("progressText").innerText = "Cancelled";
+    document.getElementById("speedText").innerText = "";
+    document.getElementById("etaText").innerText = "";
 }
-
-/* جلسة جديدة */
 
 function newSession(){
+    uploadCancelled = false;
 
-uploadCancelled = false;
+    clearInterval(countdownInterval);
 
-clearInterval(
-countdownInterval
-);
+    if(uploadXhr){
+        try{
+            uploadXhr.abort();
+        }catch(e){}
+    }
 
-clearInterval(
-uploadProgressInterval
-);
+    fileInput.value = "";
+    document.getElementById("fileName").innerText = "";
+    document.getElementById("outputBox").value = "";
 
-fileInput.value = "";
+    document.getElementById("resultArea").style.display = "none";
+    document.getElementById("processingArea").style.display = "none";
+    document.getElementById("progressWrapper").style.display = "none";
+    document.getElementById("sessionButtons").style.display = "none";
 
-document.getElementById(
-"fileName"
-).innerText = "";
+    document.getElementById("progressBar").style.width = "0%";
+    document.getElementById("progressText").innerText = "";
+    document.getElementById("speedText").innerText = "";
+    document.getElementById("etaText").innerText = "";
 
-document.getElementById(
-"outputBox"
-).value = "";
+    uploadBtn.style.display = "none";
+    uploadBtn.disabled = false;
 
-document.getElementById(
-"resultArea"
-).style.display =
-"none";
-
-document.getElementById(
-"processingArea"
-).style.display =
-"none";
-
-document.getElementById(
-"progressWrapper"
-).style.display =
-"none";
-
-document.getElementById(
-"sessionButtons"
-).style.display =
-"none";
-
-document.getElementById(
-"progressBar"
-).style.width =
-"0%";
-
-document.getElementById(
-"progressText"
-).innerText = "";
-
-uploadBtn.style.display =
-"none";
-
-uploadBtn.disabled =
-false;
-
-status.style.color =
-"#2563eb";
-
-status.innerText =
-"🔄 جلسة جديدة جاهزة";
-
+    status.style.color = "#2563eb";
+    status.innerText = "🔄 جلسة جديدة جاهزة";
 }
-
 </script>
 
 </body>
