@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linkit Lens - Ultimate OCR</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --dark: #1e293b;
+            --success: #22c55e;
+            --bg: #f8fafc;
+        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--dark); }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px; }
+        .upload-section { border: 2px dashed #cbd5e1; padding: 40px; text-align: center; border-radius: 12px; margin-bottom: 30px; transition: 0.3s; }
+        .upload-section:hover { border-color: var(--primary); background: #f1f7ff; }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
+        .btn:disabled { background: #94a3b8; }
+        .status { margin-top: 15px; font-weight: bold; }
+        .result-area { display: none; margin-top: 30px; }
+        textarea { width: 100%; height: 350px; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 16px; line-height: 1.6; resize: vertical; margin-bottom: 15px; box-sizing: border-box; }
+        .copy-btn { background: var(--success); }
+        #countdown-timer { color: var(--primary); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Linkit Lens: نظام الرفع والمعالجة</h1>
+        <p>قم برفع ملف PDF ليتم معالجته تلقائياً بواسطة GitHub Actions</p>
+    </header>
+
+    <div class="upload-section">
+        <input type="file" id="pdfFile" accept=".pdf" style="display: none;">
+        <button class="btn" onclick="document.getElementById('pdfFile').click()">إختر ملف PDF</button>
+        <div id="fileName" style="margin-top: 10px; color: #64748b;"></div>
+        <br>
+        <button id="uploadBtn" class="btn" onclick="uploadToGithub()" style="display: none;">رفع الملف وبدء المعالجة</button>
+        <div id="uploadStatus" class="status"></div>
+    </div>
+
+    <div id="processingArea" style="display: none; text-align: center; margin-bottom: 20px;">
+        <p>جاري المعالجة... سيتم جلب النتائج خلال <span id="countdown-timer">60</span> ثانية</p>
+    </div>
+
+    <div class="result-area" id="resultArea">
+        <h3>📝 النص المستخرج (قابل للتعديل):</h3>
+        <textarea id="outputBox" placeholder="سيظهر النص هنا بعد انتهاء المعالجة..."></textarea>
+        <button class="btn copy-btn" onclick="copyText()">نسخ النص المستخرج</button>
+    </div>
+</div>
+
+<script>
+    // إعدادات GitHub - قم بتعبئتها
+    const GITHUB_TOKEN = ""; // ضع الـ API Key هنا
+    const REPO_OWNER = "ioiwww"; 
+    const REPO_NAME = "Arabic-Text-Extractor-";
+    const FILE_PATH = "pdfs/s.pdf"; // سيتم دائماً الرفع باسم s.pdf لبدء الـ Action
+
+    const fileInput = document.getElementById('pdfFile');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const status = document.getElementById('uploadStatus');
+
+    fileInput.onchange = () => {
+        if(fileInput.files.length > 0) {
+            document.getElementById('fileName').innerText = "الملف المختار: " + fileInput.files[0].name;
+            uploadBtn.style.display = "inline-block";
+        }
+    };
+
+    async function uploadToGithub() {
+        const file = fileInput.files[0];
+        if (!file) return;
+
+        status.innerText = "جاري الرفع إلى GitHub...";
+        uploadBtn.disabled = true;
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = async () => {
+            const content = reader.result.split(',')[1]; // Base64 content
+
+            try {
+                // 1. الحصول على الـ SHA للملف إذا كان موجوداً لتحديثه
+                let sha = "";
+                const getFile = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+                    headers: { "Authorization": `token ${GITHUB_TOKEN}` }
+                });
+                if (getFile.ok) {
+                    const fileData = await getFile.json();
+                    sha = fileData.sha;
+                }
+
+                // 2. رفع (أو تحديث) الملف
+                const response = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}`, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${GITHUB_TOKEN}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: "Upload PDF for OCR processing",
+                        content: content,
+                        sha: sha
+                    })
+                });
+
+                if (response.ok) {
+                    status.style.color = "green";
+                    status.innerText = "تم الرفع بنجاح! بدأ GitHub Actions بالعمل.";
+                    startCountdown();
+                } else {
+                    throw new Error("فشل الرفع");
+                }
+            } catch (error) {
+                status.style.color = "red";
+                status.innerText = "خطأ في الرفع: " + error.message;
+                uploadBtn.disabled = false;
+            }
+        };
+    }
+
+    function startCountdown() {
+        document.getElementById('processingArea').style.display = "block";
+        let seconds = 60;
+        const timer = document.getElementById('countdown-timer');
+        
+        const countdown = setInterval(() => {
+            seconds--;
+            timer.innerText = seconds;
+            if (seconds <= 0) {
+                clearInterval(countdown);
+                fetchResults();
+            }
+        }, 1000);
+    }
+
+    async function fetchResults() {
+        status.innerText = "جاري محاولة جلب النص المستخرج...";
+        try {
+            // محاولة جلب ملف الـ txt الناتج
+            const response = await fetch(`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/output/s_clean.txt?t=${new Date().getTime()}`);
+            if (response.ok) {
+                const text = await response.text();
+                document.getElementById('resultArea').style.display = "block";
+                document.getElementById('outputBox').value = text;
+                status.innerText = "تم جلب النص بنجاح!";
+            } else {
+                status.innerText = "المعالجة لم تنتهِ بعد، جرب تحديث الصفحة بعد قليل.";
+            }
+        } catch (error) {
+            status.innerText = "حدث خطأ أثناء جلب النتائج.";
+        }
+    }
+
+    function copyText() {
+        const box = document.getElementById('outputBox');
+        box.select();
+        document.execCommand('copy');
+        alert("تم نسخ النص إلى الحافظة!");
+    }
+</script>
+
+</body>
+</html>
+
