@@ -1,57 +1,289 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linkit Lens - Ultimate OCR</title>
+    <title>Linkit Lens</title>
+
     <style>
-        :root {
-            --primary: #2563eb;
-            --dark: #1e293b;
-            --success: #22c55e;
-            --bg: #f8fafc;
+
+        :root{
+            --primary:#2563eb;
+            --success:#22c55e;
+            --dark:#1e293b;
+            --bg:#f8fafc;
         }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: var(--dark); }
-        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
-        header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px; }
-        .upload-section { border: 2px dashed #cbd5e1; padding: 40px; text-align: center; border-radius: 12px; margin-bottom: 30px; transition: 0.3s; }
-        .upload-section:hover { border-color: var(--primary); background: #f1f7ff; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        .btn:disabled { background: #94a3b8; }
-        .status { margin-top: 15px; font-weight: bold; }
-        .result-area { display: none; margin-top: 30px; }
-        textarea { width: 100%; height: 350px; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; font-size: 16px; line-height: 1.6; resize: vertical; margin-bottom: 15px; box-sizing: border-box; }
-        .copy-btn { background: var(--success); }
-        #countdown-timer { color: var(--primary); font-weight: bold; }
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Segoe UI',Tahoma,sans-serif;
+            background:var(--bg);
+            padding:25px;
+            color:var(--dark);
+        }
+
+        .container{
+            max-width:900px;
+            margin:auto;
+            background:white;
+            border-radius:20px;
+            padding:35px;
+            box-shadow:0 10px 30px rgba(0,0,0,.06);
+        }
+
+        header{
+            text-align:center;
+            margin-bottom:35px;
+            border-bottom:2px solid #f1f5f9;
+            padding-bottom:25px;
+        }
+
+        .logo{
+            width:75px;
+            height:75px;
+            background:#eff6ff;
+            margin:0 auto 20px;
+            border-radius:22px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:34px;
+        }
+
+        header h1{
+            font-size:34px;
+            margin-bottom:10px;
+        }
+
+        header p{
+            color:#64748b;
+            font-size:16px;
+        }
+
+        .upload-section{
+            border:2px dashed #cbd5e1;
+            border-radius:18px;
+            padding:45px 25px;
+            text-align:center;
+            transition:.3s;
+            background:#fcfdff;
+        }
+
+        .upload-section:hover{
+            border-color:var(--primary);
+            background:#f1f7ff;
+        }
+
+        .upload-icon{
+            font-size:60px;
+            margin-bottom:15px;
+        }
+
+        .upload-section h2{
+            margin-bottom:10px;
+        }
+
+        .upload-section p{
+            color:#64748b;
+            margin-bottom:25px;
+        }
+
+        .btn{
+            background:var(--primary);
+            color:white;
+            border:none;
+            padding:14px 28px;
+            border-radius:12px;
+            cursor:pointer;
+            font-size:16px;
+            font-weight:bold;
+            transition:.3s;
+            box-shadow:0 6px 15px rgba(37,99,235,.18);
+        }
+
+        .btn:hover{
+            transform:translateY(-2px);
+        }
+
+        .btn-success{
+            background:var(--success);
+            box-shadow:0 6px 15px rgba(34,197,94,.18);
+        }
+
+        .status{
+            margin-top:18px;
+            font-weight:bold;
+        }
+
+        .result-area{
+            display:none;
+            margin-top:30px;
+        }
+
+        textarea{
+            width:100%;
+            height:350px;
+            padding:18px;
+            border-radius:14px;
+            border:1px solid #e2e8f0;
+            font-size:16px;
+            line-height:1.8;
+            resize:vertical;
+            margin-bottom:15px;
+            background:#fcfcfd;
+        }
+
+        textarea:focus{
+            outline:none;
+            border-color:var(--primary);
+        }
+
+        #countdown-timer{
+            color:var(--primary);
+            font-weight:bold;
+            font-size:20px;
+        }
+
+        #processingArea{
+            display:none;
+            text-align:center;
+            margin-top:25px;
+            background:#eff6ff;
+            padding:25px;
+            border-radius:15px;
+        }
+
+        .loader{
+            width:60px;
+            height:60px;
+            border:5px solid #dbeafe;
+            border-top:5px solid var(--primary);
+            border-radius:50%;
+            margin:0 auto 15px;
+            animation:spin 1s linear infinite;
+        }
+
+        @keyframes spin{
+            to{
+                transform:rotate(360deg);
+            }
+        }
+
     </style>
+
 </head>
+
 <body>
 
 <div class="container">
+
     <header>
-        <h1>Linkit Lens: نظام الرفع والمعالجة</h1>
-        <p>قم برفع ملف PDF ليتم معالجته تلقائياً بواسطة GitHub Actions</p>
+
+        <div class="logo">
+            📄
+        </div>
+
+        <h1>
+            Linkit Lens
+        </h1>
+
+        <p>
+            ارفع ملف PDF وسيتم استخراجه ومعالجته تلقائياً
+        </p>
+
     </header>
 
     <div class="upload-section">
-        <input type="file" id="pdfFile" accept=".pdf" style="display: none;">
-        <button class="btn" onclick="document.getElementById('pdfFile').click()">إختر ملف PDF</button>
-        <div id="fileName" style="margin-top: 10px; color: #64748b;"></div>
+
+        <div class="upload-icon">
+            ☁️
+        </div>
+
+        <h2>
+            رفع ملف PDF
+        </h2>
+
+        <p>
+            يدعم المعالجة التلقائية بواسطة GitHub Actions
+        </p>
+
+        <input type="file"
+               id="pdfFile"
+               accept=".pdf"
+               style="display:none;">
+
+        <button class="btn"
+                onclick="document.getElementById('pdfFile').click()">
+
+            📁 اختر ملف PDF
+
+        </button>
+
+        <div id="fileName"
+             style="margin-top:18px;color:#64748b;font-weight:bold;">
+        </div>
+
         <br>
-        <button id="uploadBtn" class="btn" onclick="uploadToGithub()" style="display: none;">رفع الملف وبدء المعالجة</button>
+
+        <button id="uploadBtn"
+                class="btn btn-success"
+                onclick="uploadToGithub()"
+                style="display:none;margin-top:15px;">
+
+            🚀 رفع الملف وبدء المعالجة
+
+        </button>
+
         <div id="uploadStatus" class="status"></div>
+
     </div>
 
-    <div id="processingArea" style="display: none; text-align: center; margin-bottom: 20px;">
-        <p>جاري المعالجة... سيتم جلب النتائج خلال <span id="countdown-timer">60</span> ثانية</p>
+    <div id="processingArea">
+
+        <div class="loader"></div>
+
+        <p style="font-size:18px;font-weight:bold;margin-bottom:10px;">
+            جاري المعالجة...
+        </p>
+
+        <p style="color:#64748b;">
+            سيتم جلب النتائج خلال
+            <span id="countdown-timer">60</span>
+            ثانية
+        </p>
+
     </div>
 
     <div class="result-area" id="resultArea">
-        <h3>📝 النص المستخرج (قابل للتعديل):</h3>
-        <textarea id="outputBox" placeholder="سيظهر النص هنا بعد انتهاء المعالجة..."></textarea>
-        <button class="btn copy-btn" onclick="copyText()">نسخ النص المستخرج</button>
+
+        <h3 style="margin-bottom:15px;">
+            📝 النص المستخرج:
+        </h3>
+
+        <textarea id="outputBox"
+                  placeholder="سيظهر النص هنا بعد انتهاء المعالجة...">
+        </textarea>
+
+        <button class="btn btn-success"
+                onclick="copyText()">
+
+            📋 نسخ النص المستخرج
+
+        </button>
+
     </div>
+
 </div>
+
+</body>
+
+</html>
 
 <script>
     // تم التمويه لتقليل احتمالية الـ Revoke
