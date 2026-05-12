@@ -2,20 +2,20 @@
 <html lang="ar" dir="rtl">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-<title>Repository Files</title>
+<title>🌍 Web Hub</title>
 
 <style>
 
 :root{
     --primary:#2563eb;
-    --success:#22c55e;
-    --danger:#ef4444;
-    --dark:#0f172a;
-    --bg:#f8fafc;
+    --primary-light:#dbeafe;
+    --bg:#f1f5f9;
     --card:#ffffff;
+    --dark:#0f172a;
+    --text:#475569;
     --border:#e2e8f0;
 }
 
@@ -28,18 +28,20 @@
 body{
     font-family:'Segoe UI',Tahoma,sans-serif;
     background:var(--bg);
-    padding:25px;
     color:var(--dark);
+    padding:24px;
 }
 
 .container{
-    max-width:1000px;
+    max-width:1200px;
     margin:auto;
 }
 
+/* Header */
+
 .header{
     background:white;
-    border-radius:24px;
+    border-radius:28px;
     padding:30px;
     margin-bottom:25px;
     box-shadow:0 10px 30px rgba(0,0,0,.05);
@@ -47,11 +49,11 @@ body{
 
 .header h1{
     font-size:34px;
-    margin-bottom:8px;
+    margin-bottom:10px;
 }
 
 .header p{
-    color:#64748b;
+    color:var(--text);
     font-size:15px;
 }
 
@@ -64,10 +66,10 @@ body{
 
 .btn{
     border:none;
-    border-radius:14px;
-    padding:13px 22px;
-    cursor:pointer;
+    border-radius:16px;
+    padding:14px 22px;
     font-size:15px;
+    cursor:pointer;
     font-weight:bold;
     transition:.25s;
 }
@@ -81,139 +83,144 @@ body{
     color:white;
 }
 
-.btn-success{
-    background:var(--success);
+.btn-add{
+    background:#22c55e;
     color:white;
 }
 
-.stats{
+/* Search */
+
+.search-box{
+    margin:25px 0;
+    position:relative;
+}
+
+.search-box input{
+    width:100%;
+    padding:18px 20px;
+    border:none;
+    border-radius:18px;
+    font-size:16px;
+    background:white;
+    box-shadow:0 5px 15px rgba(0,0,0,.04);
+    outline:none;
+}
+
+/* Grid */
+
+.webs-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:16px;
-    margin-bottom:24px;
+    gap:20px;
 }
 
-.stat-card{
-    background:white;
-    border-radius:20px;
-    padding:22px;
-    box-shadow:0 8px 25px rgba(0,0,0,.04);
-}
+/* Card */
 
-.stat-title{
-    color:#64748b;
-    font-size:14px;
-    margin-bottom:8px;
-}
-
-.stat-value{
-    font-size:28px;
-    font-weight:bold;
-}
-
-.files-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:18px;
-}
-
-.file-card{
+.web-card{
     background:var(--card);
-    border-radius:22px;
-    padding:22px;
-    border:1px solid var(--border);
+    border-radius:24px;
+    padding:24px;
+    text-align:center;
     transition:.25s;
+    border:1px solid var(--border);
+    cursor:pointer;
     position:relative;
     overflow:hidden;
 }
 
-.file-card:hover{
-    transform:translateY(-4px);
+.web-card:hover{
+    transform:translateY(-5px);
     border-color:#bfdbfe;
-    box-shadow:0 12px 25px rgba(37,99,235,.08);
+    box-shadow:0 15px 30px rgba(37,99,235,.10);
 }
 
-.file-icon{
-    font-size:42px;
-    margin-bottom:14px;
+.web-icon{
+    font-size:55px;
+    margin-bottom:15px;
 }
 
-.file-name{
-    font-size:17px;
+.web-name{
+    font-size:19px;
     font-weight:bold;
     margin-bottom:10px;
+}
+
+.web-url{
+    color:var(--text);
+    font-size:13px;
     word-break:break-word;
 }
 
-.file-size{
-    color:#64748b;
-    font-size:14px;
-    margin-bottom:16px;
+/* Add Card */
+
+.add-card{
+    border:2px dashed #93c5fd;
+    background:#eff6ff;
 }
 
-.file-actions{
+.add-card:hover{
+    background:#dbeafe;
+}
+
+/* Modal */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.5);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:999;
+}
+
+.modal-content{
+    background:white;
+    width:95%;
+    max-width:450px;
+    border-radius:24px;
+    padding:25px;
+}
+
+.modal-content h2{
+    margin-bottom:20px;
+}
+
+.form-group{
+    margin-bottom:15px;
+}
+
+.form-group input{
+    width:100%;
+    padding:14px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    outline:none;
+    font-size:15px;
+}
+
+.modal-actions{
     display:flex;
     gap:10px;
-    flex-wrap:wrap;
+    margin-top:15px;
 }
 
-.action-btn{
+.modal-actions button{
     flex:1;
-    min-width:110px;
-    text-align:center;
-    text-decoration:none;
-    padding:11px;
-    border-radius:12px;
-    font-weight:bold;
-    transition:.2s;
 }
 
-.view-btn{
-    background:#eff6ff;
-    color:#2563eb;
-}
+/* Responsive */
 
-.download-btn{
-    background:#ecfdf5;
-    color:#16a34a;
-}
+@media(max-width:600px){
 
-.loading{
-    text-align:center;
-    padding:70px 20px;
-    color:#64748b;
-}
-
-.loader{
-    width:70px;
-    height:70px;
-    border:6px solid #dbeafe;
-    border-top:6px solid var(--primary);
-    border-radius:50%;
-    margin:0 auto 20px;
-    animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-    to{
-        transform:rotate(360deg);
+    .header h1{
+        font-size:26px;
     }
-}
 
-.empty{
-    background:white;
-    border-radius:24px;
-    padding:60px 25px;
-    text-align:center;
-}
+    .web-icon{
+        font-size:45px;
+    }
 
-.error{
-    background:#fef2f2;
-    color:#dc2626;
-    border:1px solid #fecaca;
-    padding:20px;
-    border-radius:18px;
-    margin-top:20px;
 }
 
 </style>
@@ -223,29 +230,31 @@ body{
 
 <div class="container">
 
+    <!-- Header -->
+
     <div class="header">
 
         <h1>
-            📂 Repository Files
+            🌍 Web Hub
         </h1>
 
         <p>
-            عرض ملفات GitHub Repository بشكل أنيق ومباشر
+            قائمة مواقع جميلة وسريعة داخل التطبيق
         </p>
 
         <div class="top-actions">
 
             <button class="btn btn-primary"
-                    onclick="loadFiles()">
+                    onclick="renderWebs()">
 
-                🔄 Refresh Files
+                🔄 تحديث
 
             </button>
 
-            <button class="btn btn-success"
-                    onclick="window.location.href='index.html'">
+            <button class="btn btn-add"
+                    onclick="openModal()">
 
-                ⬅ العودة للواجهة الرئيسية
+                ➕ إضافة موقع
 
             </button>
 
@@ -253,237 +262,175 @@ body{
 
     </div>
 
-    <div class="stats">
+    <!-- Search -->
 
-        <div class="stat-card">
+    <div class="search-box">
 
-            <div class="stat-title">
-                عدد الملفات
-            </div>
-
-            <div class="stat-value"
-                 id="fileCount">
-                0
-            </div>
-
-        </div>
-
-        <div class="stat-card">
-
-            <div class="stat-title">
-                حجم الملفات
-            </div>
-
-            <div class="stat-value"
-                 id="totalSize">
-                0 MB
-            </div>
-
-        </div>
+        <input type="text"
+               id="searchInput"
+               placeholder="🔎 ابحث عن موقع..."
+               onkeyup="searchWebs()">
 
     </div>
 
-    <div id="loadingArea" class="loading">
+    <!-- Grid -->
 
-        <div class="loader"></div>
+    <div class="webs-grid"
+         id="websGrid">
+    </div>
+
+</div>
+
+<!-- Modal -->
+
+<div class="modal"
+     id="modal">
+
+    <div class="modal-content">
 
         <h2>
-            جاري تحميل الملفات...
+            ➕ إضافة موقع جديد
         </h2>
 
-    </div>
+        <div class="form-group">
 
-    <div id="errorArea"></div>
+            <input type="text"
+                   id="siteName"
+                   placeholder="اسم الموقع">
 
-    <div class="files-grid"
-         id="filesGrid">
+        </div>
+
+        <div class="form-group">
+
+            <input type="text"
+                   id="siteURL"
+                   placeholder="https://example.com">
+
+        </div>
+
+        <div class="form-group">
+
+            <input type="text"
+                   id="siteEmoji"
+                   placeholder="🌐 إيموجي">
+
+        </div>
+
+        <div class="modal-actions">
+
+            <button class="btn btn-primary"
+                    onclick="addWebsite()">
+
+                حفظ
+
+            </button>
+
+            <button class="btn"
+                    onclick="closeModal()">
+
+                إلغاء
+
+            </button>
+
+        </div>
+
     </div>
 
 </div>
 
 <script>
 
-/* GitHub Credentials */
+/* Default Websites */
 
-const p1 = "ghp_";
+let websites = JSON.parse(
+    localStorage.getItem("websites")
+) || [
 
-const p2 = [
-    "SrVgJdXy",
-    "ZZJImo21",
-    "mGpPLybt",
-    "vn76fS1M",
-    "5VS4"
+    {
+        name:"Google",
+        url:"https://google.com",
+        emoji:"🔎"
+    },
+
+    {
+        name:"YouTube",
+        url:"https://youtube.com",
+        emoji:"▶️"
+    },
+
+    {
+        name:"Facebook",
+        url:"https://facebook.com",
+        emoji:"📘"
+    },
+
+    {
+        name:"Instagram",
+        url:"https://instagram.com",
+        emoji:"📸"
+    },
+
+    {
+        name:"TikTok",
+        url:"https://tiktok.com",
+        emoji:"🎵"
+    },
+
+    {
+        name:"Twitter / X",
+        url:"https://x.com",
+        emoji:"🐦"
+    },
+
+    {
+        name:"ChatGPT",
+        url:"https://chat.openai.com",
+        emoji:"🤖"
+    },
+
+    {
+        name:"Netflix",
+        url:"https://netflix.com",
+        emoji:"🎬"
+    }
+
 ];
 
-const GITHUB_TOKEN =
-    p1 + p2.join("");
+/* Render */
 
-const REPO_OWNER =
-    "ioiwww";
-
-const REPO_NAME =
-    "Arabic-Text-Extractor-";
-
-/* Load Files */
-
-async function loadFiles(){
-
-    document.getElementById(
-        "loadingArea"
-    ).style.display = "block";
-
-    document.getElementById(
-        "filesGrid"
-    ).innerHTML = "";
-
-    document.getElementById(
-        "errorArea"
-    ).innerHTML = "";
-
-    try{
-
-        const response =
-            await fetch(
-                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents`,
-                {
-                    headers:{
-                        "Authorization":
-                        `token ${GITHUB_TOKEN}`
-                    }
-                }
-            );
-
-        if(!response.ok){
-
-            throw new Error(
-                "Failed to load repository"
-            );
-        }
-
-        const files =
-            await response.json();
-
-        document.getElementById(
-            "loadingArea"
-        ).style.display = "none";
-
-        renderFiles(files);
-
-    }catch(error){
-
-        console.error(error);
-
-        document.getElementById(
-            "loadingArea"
-        ).style.display = "none";
-
-        document.getElementById(
-            "errorArea"
-        ).innerHTML = `
-
-            <div class="error">
-
-                ❌ حدث خطأ أثناء تحميل الملفات
-
-            </div>
-
-        `;
-    }
-}
-
-/* Render Files */
-
-function renderFiles(files){
+function renderWebs(){
 
     const grid =
         document.getElementById(
-            "filesGrid"
+            "websGrid"
         );
 
-    if(!files.length){
+    grid.innerHTML = "";
 
-        grid.innerHTML = `
-
-            <div class="empty">
-
-                لا توجد ملفات داخل الريبو
-
-            </div>
-
-        `;
-
-        return;
-    }
-
-    let totalBytes = 0;
-
-    document.getElementById(
-        "fileCount"
-    ).innerText = files.length;
-
-    files.forEach(file => {
-
-        totalBytes += file.size || 0;
-
-        let icon = "📄";
-
-        if(file.type === "dir"){
-            icon = "📁";
-        }
-
-        if(file.name.endsWith(".pdf")){
-            icon = "📕";
-        }
-
-        if(file.name.endsWith(".txt")){
-            icon = "📝";
-        }
-
-        if(file.name.endsWith(".html")){
-            icon = "🌐";
-        }
-
-        const sizeMB =
-            (file.size / 1024 / 1024).toFixed(2);
+    websites.forEach(site => {
 
         const card =
             document.createElement("div");
 
         card.className =
-            "file-card";
+            "web-card";
+
+        card.onclick = () => {
+            window.location.href = site.url;
+        };
 
         card.innerHTML = `
 
-            <div class="file-icon">
-                ${icon}
+            <div class="web-icon">
+                ${site.emoji}
             </div>
 
-            <div class="file-name">
-                ${file.name}
+            <div class="web-name">
+                ${site.name}
             </div>
 
-            <div class="file-size">
-                ${sizeMB} MB
-            </div>
-
-            <div class="file-actions">
-
-                <a href="${file.html_url}"
-                   target="_blank"
-                   class="action-btn view-btn">
-
-                    👁 View
-
-                </a>
-
-                <a href="${file.download_url || file.html_url}"
-                   target="_blank"
-                   class="action-btn download-btn">
-
-                    ⬇ Download
-
-                </a>
-
+            <div class="web-url">
+                ${site.url}
             </div>
 
         `;
@@ -492,18 +439,140 @@ function renderFiles(files){
 
     });
 
-    const totalMB =
-        (totalBytes / 1024 / 1024).toFixed(2);
+    /* Add Button Card */
 
-    document.getElementById(
-        "totalSize"
-    ).innerText =
-        totalMB + " MB";
+    const addCard =
+        document.createElement("div");
+
+    addCard.className =
+        "web-card add-card";
+
+    addCard.onclick =
+        openModal;
+
+    addCard.innerHTML = `
+
+        <div class="web-icon">
+            ➕
+        </div>
+
+        <div class="web-name">
+            إضافة موقع
+        </div>
+
+        <div class="web-url">
+            اضغط لإضافة المزيد
+        </div>
+
+    `;
+
+    grid.appendChild(addCard);
 }
 
-/* Auto Load */
+/* Search */
 
-loadFiles();
+function searchWebs(){
+
+    const value =
+        document.getElementById(
+            "searchInput"
+        ).value.toLowerCase();
+
+    const cards =
+        document.querySelectorAll(
+            ".web-card"
+        );
+
+    cards.forEach(card => {
+
+        if(
+            card.innerText
+            .toLowerCase()
+            .includes(value)
+        ){
+            card.style.display = "block";
+        }else{
+            card.style.display = "none";
+        }
+
+    });
+}
+
+/* Modal */
+
+function openModal(){
+
+    document.getElementById(
+        "modal"
+    ).style.display = "flex";
+}
+
+function closeModal(){
+
+    document.getElementById(
+        "modal"
+    ).style.display = "none";
+}
+
+/* Add Website */
+
+function addWebsite(){
+
+    const name =
+        document.getElementById(
+            "siteName"
+        ).value;
+
+    const url =
+        document.getElementById(
+            "siteURL"
+        ).value;
+
+    const emoji =
+        document.getElementById(
+            "siteEmoji"
+        ).value || "🌐";
+
+    if(!name || !url){
+
+        alert(
+            "أدخل البيانات كاملة"
+        );
+
+        return;
+    }
+
+    websites.push({
+        name,
+        url,
+        emoji
+    });
+
+    localStorage.setItem(
+        "websites",
+        JSON.stringify(websites)
+    );
+
+    closeModal();
+
+    renderWebs();
+
+    document.getElementById(
+        "siteName"
+    ).value = "";
+
+    document.getElementById(
+        "siteURL"
+    ).value = "";
+
+    document.getElementById(
+        "siteEmoji"
+    ).value = "";
+}
+
+/* Start */
+
+renderWebs();
 
 </script>
 
