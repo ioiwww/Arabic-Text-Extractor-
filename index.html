@@ -2,262 +2,349 @@
 <html lang="ar" dir="rtl">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Linkit Lens OCR</title>
 
-    <style>
-        :root{
-            --primary:#2563eb;
-            --success:#22c55e;
-            --danger:#ef4444;
-            --bg:#f8fafc;
-            --dark:#1e293b;
-            --muted:#64748b;
-        }
+<meta charset="UTF-8">
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-        }
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-        body{
-            font-family:Tahoma,sans-serif;
-            background:var(--bg);
-            padding:25px;
-            color:var(--dark);
-        }
+<title>Linkit Lens OCR</title>
 
-        .container{
-            max-width:900px;
-            margin:auto;
-            background:white;
-            padding:35px;
-            border-radius:22px;
-            box-shadow:0 10px 30px rgba(0,0,0,.06);
-        }
+<style>
 
-        header{
-            text-align:center;
-            margin-bottom:35px;
-        }
+:root{
+    --primary:#2563eb;
+    --success:#22c55e;
+    --danger:#ef4444;
+    --bg:#f8fafc;
+    --dark:#1e293b;
+    --muted:#64748b;
+}
 
-        .logo{
-            font-size:60px;
-            margin-bottom:15px;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        h1{
-            margin-bottom:10px;
-        }
+body{
+    font-family:Tahoma,sans-serif;
+    background:var(--bg);
+    padding:25px;
+    color:var(--dark);
+}
 
-        p{
-            color:var(--muted);
-        }
+.container{
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:35px;
+    border-radius:22px;
+    box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
 
-        .upload-box{
-            margin-top:25px;
-            border:2px dashed #cbd5e1;
-            border-radius:18px;
-            padding:35px;
-            text-align:center;
-        }
+header{
+    text-align:center;
+    margin-bottom:35px;
+}
 
-        .btn{
-            background:var(--primary);
-            color:white;
-            border:none;
-            padding:14px 28px;
-            border-radius:12px;
-            cursor:pointer;
-            font-size:16px;
-            font-weight:bold;
-            transition:.2s;
-        }
+.logo{
+    font-size:60px;
+    margin-bottom:15px;
+}
 
-        .btn:hover{
-            transform:translateY(-2px);
-        }
+h1{
+    margin-bottom:10px;
+}
 
-        .btn:disabled{
-            opacity:.6;
-            cursor:not-allowed;
-        }
+p{
+    color:var(--muted);
+}
 
-        .btn-success{
-            background:var(--success);
-        }
+.upload-box{
+    margin-top:25px;
+    border:2px dashed #cbd5e1;
+    border-radius:18px;
+    padding:35px;
+    text-align:center;
+}
 
-        .btn-danger{
-            background:var(--danger);
-        }
+.btn{
+    background:var(--primary);
+    color:white;
+    border:none;
+    padding:14px 28px;
+    border-radius:12px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:bold;
+    transition:.2s;
+}
 
-        #status{
-            margin-top:18px;
-            font-weight:bold;
-            min-height:24px;
-        }
+.btn:hover{
+    transform:translateY(-2px);
+}
 
-        .progress-wrap{
-            margin-top:20px;
-            display:none;
-        }
+.btn:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+}
 
-        .progress-bg{
-            width:100%;
-            height:16px;
-            background:#e2e8f0;
-            border-radius:999px;
-            overflow:hidden;
-        }
+.btn-success{
+    background:var(--success);
+}
 
-        .progress-fill{
-            width:0%;
-            height:100%;
-            background:linear-gradient(90deg,#2563eb,#60a5fa);
-            transition:width .15s linear;
-        }
+.btn-danger{
+    background:var(--danger);
+}
 
-        .progress-info{
-            margin-top:10px;
-            color:var(--muted);
-        }
+#status{
+    margin-top:18px;
+    font-weight:bold;
+}
 
-        .processing{
-            display:none;
-            text-align:center;
-            margin-top:25px;
-        }
+.progress-wrap{
+    margin-top:20px;
+    display:none;
+}
 
-        .loader{
-            width:60px;
-            height:60px;
-            border:5px solid #dbeafe;
-            border-top:5px solid #2563eb;
-            border-radius:50%;
-            margin:auto;
-            animation:spin 1s linear infinite;
-        }
+.progress-bg{
+    width:100%;
+    height:16px;
+    background:#e2e8f0;
+    border-radius:999px;
+    overflow:hidden;
+}
 
-        @keyframes spin{
-            to{
-                transform:rotate(360deg);
-            }
-        }
+.progress-fill{
+    width:0%;
+    height:100%;
+    background:linear-gradient(
+        90deg,
+        #2563eb,
+        #60a5fa
+    );
+    transition:width .15s linear;
+}
 
-        .result{
-            display:none;
-            margin-top:30px;
-        }
+.progress-info{
+    margin-top:10px;
+    color:var(--muted);
+}
 
-        textarea{
-            width:100%;
-            height:350px;
-            border-radius:14px;
-            border:1px solid #e2e8f0;
-            padding:18px;
-            font-size:16px;
-            line-height:1.8;
-            resize:vertical;
-            margin-bottom:15px;
-        }
-    </style>
+.processing{
+    display:none;
+    text-align:center;
+    margin-top:25px;
+}
+
+.loader{
+    width:60px;
+    height:60px;
+    border:5px solid #dbeafe;
+    border-top:5px solid #2563eb;
+    border-radius:50%;
+    margin:auto;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+.result{
+    display:none;
+    margin-top:30px;
+}
+
+textarea{
+    width:100%;
+    height:350px;
+    border-radius:14px;
+    border:1px solid #e2e8f0;
+    padding:18px;
+    font-size:16px;
+    line-height:1.8;
+    resize:vertical;
+    margin-bottom:15px;
+}
+
+</style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-    <header>
-        <div class="logo">📄</div>
-        <h1>Linkit Lens</h1>
-        <p>OCR Extraction via GitHub Actions</p>
-    </header>
+<header>
 
-    <div class="upload-box">
+<div class="logo">📄</div>
 
-        <input
-            type="file"
-            id="pdfFile"
-            accept=".pdf"
-            style="display:none;"
-        />
+<h1>Linkit Lens</h1>
 
-        <button
-            class="btn"
-            onclick="document.getElementById('pdfFile').click()"
-        >
-            📁 اختر ملف PDF
-        </button>
+<p>
+OCR Extraction via GitHub Actions
+</p>
 
-        <div
-            id="fileName"
-            style="margin-top:18px;font-weight:bold;"
-        ></div>
+</header>
 
-        <br />
+<div class="upload-box">
 
-        <button
-            id="uploadBtn"
-            class="btn btn-success"
-            style="display:none;margin-top:15px;"
-            onclick="uploadToGithub()"
-        >
-            🚀 رفع الملف
-        </button>
+<input
+    type="file"
+    id="pdfFile"
+    accept=".pdf"
+    style="display:none;"
+>
 
-        <div id="status"></div>
+<button
+    class="btn"
+    onclick="document.getElementById('pdfFile').click()"
+>
 
-        <div id="progressWrap" class="progress-wrap">
-            <div class="progress-bg">
-                <div id="progressFill" class="progress-fill"></div>
-            </div>
+📁 اختر ملف PDF
 
-            <div id="progressInfo" class="progress-info"></div>
-        </div>
+</button>
 
-        <div id="processing" class="processing">
-            <div class="loader"></div>
-            <p style="margin-top:15px;">جارٍ انتظار المعالجة...</p>
-        </div>
+<div
+    id="fileName"
+    style="margin-top:18px;font-weight:bold;"
+></div>
 
-        <div id="result" class="result">
-            <h3 style="margin-bottom:15px;">📝 النص المستخرج</h3>
+<br>
 
-            <textarea id="outputBox" placeholder="سيظهر النص هنا بعد الانتهاء..."></textarea>
+<button
+    id="uploadBtn"
+    class="btn btn-success"
+    style="display:none;margin-top:15px;"
+    onclick="uploadToGithub()"
+>
 
-            <button
-                class="btn btn-success"
-                onclick="copyText()"
-            >
-                📋 نسخ النص
-            </button>
-        </div>
+🚀 رفع الملف
 
-    </div>
+</button>
+
+<div id="status"></div>
+
+<div
+    id="progressWrap"
+    class="progress-wrap"
+>
+
+<div class="progress-bg">
+
+<div
+    id="progressFill"
+    class="progress-fill"
+></div>
+
+</div>
+
+<div
+    id="progressInfo"
+    class="progress-info"
+></div>
+
+</div>
+
+<div
+    id="processing"
+    class="processing"
+>
+
+<div class="loader"></div>
+
+<p style="margin-top:15px;">
+جارٍ انتظار المعالجة...
+</p>
+
+</div>
+
+<div
+    id="result"
+    class="result"
+>
+
+<h3 style="margin-bottom:15px;">
+📝 النص المستخرج
+</h3>
+
+<textarea
+    id="outputBox"
+></textarea>
+
+<button
+    class="btn btn-success"
+    onclick="copyText()"
+>
+
+📋 نسخ النص
+
+</button>
+
+</div>
+
+</div>
+
 </div>
 
 <script>
-const fileInput = document.getElementById("pdfFile");
-const uploadBtn = document.getElementById("uploadBtn");
-const statusBox = document.getElementById("status");
-const progressWrap = document.getElementById("progressWrap");
-const progressFill = document.getElementById("progressFill");
-const progressInfo = document.getElementById("progressInfo");
-const processingBox = document.getElementById("processing");
-const resultBox = document.getElementById("result");
+
+const fileInput =
+    document.getElementById(
+        "pdfFile"
+    );
+
+const uploadBtn =
+    document.getElementById(
+        "uploadBtn"
+    );
+
+const statusBox =
+    document.getElementById(
+        "status"
+    );
+
+const progressWrap =
+    document.getElementById(
+        "progressWrap"
+    );
+
+const progressFill =
+    document.getElementById(
+        "progressFill"
+    );
+
+const progressInfo =
+    document.getElementById(
+        "progressInfo"
+    );
+
+const processingBox =
+    document.getElementById(
+        "processing"
+    );
+
+const resultBox =
+    document.getElementById(
+        "result"
+    );
 
 let currentFileName = "";
-let currentCommitSha = "";
+
 let uploadXhr = null;
+
 let uploadStart = 0;
-let monitorInterval = null;
-let uploadCancelled = false;
 
 /* GitHub Config */
 
 const p1 = "ghp_";
+
 const p2 = [
     "SrVgJdXy",
     "ZZJImo21",
@@ -266,97 +353,126 @@ const p2 = [
     "5VS4"
 ];
 
-const GITHUB_TOKEN = p1 + p2.join("");
-const REPO_OWNER = "ioiwww";
-const REPO_NAME = "Arabic-Text-Extractor-";
-const BRANCH = "main";
-const WORKFLOW_FILE = "main.yml";
-const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
+const GITHUB_TOKEN =
+    p1 + p2.join("");
 
-function setStatus(text, color = "#2563eb") {
-    statusBox.style.color = color;
-    statusBox.innerText = text;
-}
+const REPO_OWNER =
+    "ioiwww";
 
-function formatBytes(bytes){
-    if(bytes === 0) return "0 B";
+const REPO_NAME =
+    "Arabic-Text-Extractor-";
 
-    const units = ["B", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    const value = bytes / Math.pow(1024, i);
-
-    return `${value.toFixed(1)} ${units[i]}`;
-}
-
-function formatSpeed(bytesPerSecond){
-    if(!isFinite(bytesPerSecond) || bytesPerSecond <= 0) return "—";
-    return `${formatBytes(bytesPerSecond)}/s`;
-}
-
-function base64ToUtf8(base64) {
-    const binary = atob(base64.replace(/\n/g, ""));
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
-    }
-    return new TextDecoder("utf-8").decode(bytes);
-}
+const BRANCH =
+    "main";
 
 /* File Select */
 
-fileInput.addEventListener("change", () => {
-    const file = fileInput.files[0];
-    if (!file) return;
+fileInput.addEventListener(
+    "change",
+    () => {
 
-    document.getElementById("fileName").innerText = `📄 ${file.name}`;
-    uploadBtn.style.display = "inline-block";
-    setStatus("الملف جاهز");
+    const file =
+        fileInput.files[0];
+
+    if(!file)
+        return;
+
+    document.getElementById(
+        "fileName"
+    ).innerText =
+        `📄 ${file.name}`;
+
+    uploadBtn.style.display =
+        "inline-block";
+
+    statusBox.innerText =
+        "الملف جاهز";
 });
 
 /* Upload */
 
 async function uploadToGithub(){
-    const file = fileInput.files[0];
+
+    const file =
+        fileInput.files[0];
 
     if(!file){
-        alert("اختر ملف PDF");
+
+        alert(
+            "اختر ملف PDF"
+        );
+
         return;
     }
 
-    if(file.size > MAX_FILE_SIZE){
-        alert("الملف كبير جداً. جرّب ملف أصغر من 25MB.");
+    // دعم ملفات كبيرة
+    if(file.size > 25 * 1024 * 1024){
+
+        alert(
+            "الملف كبير جداً"
+        );
+
         return;
     }
 
-    uploadCancelled = false;
     uploadBtn.disabled = true;
 
-    resultBox.style.display = "none";
-    processingBox.style.display = "none";
-    progressWrap.style.display = "block";
-    progressFill.style.width = "0%";
-    progressInfo.innerText = "";
+    resultBox.style.display =
+        "none";
 
-    uploadStart = Date.now();
+    processingBox.style.display =
+        "none";
 
-    const randomPart = Math.random().toString(36).slice(2, 8);
-    const uniqueId = Date.now();
-    currentFileName = `job_${uniqueId}_${randomPart}.pdf`;
+    progressWrap.style.display =
+        "block";
 
-    const filePath = `pdfs/${currentFileName}`;
+    uploadStart =
+        Date.now();
 
-    setStatus("📤 جاري قراءة الملف...");
+    const uniqueId =
+        Date.now();
 
-    const reader = new FileReader();
+    currentFileName =
+        `job_${uniqueId}.pdf`;
+
+    const filePath =
+        `pdfs/${currentFileName}`;
+
+    statusBox.style.color =
+        "#2563eb";
+
+    statusBox.innerText =
+        "📤 جاري قراءة الملف...";
+
+    const reader =
+        new FileReader();
+
     reader.readAsDataURL(file);
 
     reader.onload = async () => {
-        if (uploadCancelled) return;
 
         try{
-            const base64 = reader.result.split(",")[1];
 
-            uploadXhr = new XMLHttpRequest();
+            const base64 =
+                reader.result
+                    .split(",")[1];
+
+            const body =
+                JSON.stringify({
+
+                    message:
+                    `Upload ${currentFileName}`,
+
+                    content:
+                    base64,
+
+                    branch:
+                    BRANCH
+                });
+
+            uploadXhr =
+                new XMLHttpRequest();
+
             uploadXhr.open(
                 "PUT",
                 `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${filePath}`
@@ -366,240 +482,252 @@ async function uploadToGithub(){
                 "Authorization",
                 `token ${GITHUB_TOKEN}`
             );
-            uploadXhr.setRequestHeader("Content-Type", "application/json");
 
-            uploadXhr.upload.onprogress = (event) => {
+            uploadXhr.setRequestHeader(
+                "Content-Type",
+                "application/json"
+            );
+
+            uploadXhr.upload.onprogress =
+                (event) => {
+
                 if(event.lengthComputable){
-                    const percent = Math.round((event.loaded / event.total) * 100);
-                    progressFill.style.width = `${percent}%`;
 
-                    const elapsed = Math.max((Date.now() - uploadStart) / 1000, 0.1);
-                    const speed = event.loaded / elapsed;
-                    const mbps = (speed / 1024 / 1024).toFixed(2);
+                    const percent =
+                        Math.round(
+                            (event.loaded /
+                            event.total) * 100
+                        );
 
-                    progressInfo.innerText = `${percent}% • ${mbps} MB/s • ${formatBytes(event.loaded)} / ${formatBytes(event.total)}`;
+                    progressFill.style.width =
+                        `${percent}%`;
+
+                    const elapsed =
+                        (Date.now() -
+                        uploadStart) / 1000;
+
+                    const speed =
+                        event.loaded /
+                        elapsed;
+
+                    const mbps =
+                        (
+                            speed /
+                            1024 /
+                            1024
+                        ).toFixed(2);
+
+                    progressInfo.innerText =
+                        `${percent}% • ${mbps} MB/s`;
                 }
             };
 
-            uploadXhr.onload = async () => {
-                if(uploadCancelled) return;
+            uploadXhr.onload =
+                async () => {
 
-                if(uploadXhr.status >= 200 && uploadXhr.status < 300){
-                    progressFill.style.width = "100%";
+                if(
+                    uploadXhr.status >= 200 &&
+                    uploadXhr.status < 300
+                ){
 
-                    let responseData = null;
-                    try {
-                        responseData = JSON.parse(uploadXhr.responseText || "{}");
-                    } catch (_) {}
+                    statusBox.style.color =
+                        "#22c55e";
 
-                    currentCommitSha = responseData?.commit?.sha || "";
-                    setStatus("✅ تم رفع الملف بنجاح", "#22c55e");
+                    statusBox.innerText =
+                        "✅ تم رفع الملف";
 
-                    monitorWorkflow(currentCommitSha);
+                    progressFill.style.width =
+                        "100%";
+
+                    await triggerWorkflow();
+
+                    startPolling();
+
                 }else{
-                    setStatus(`❌ فشل الرفع: ${uploadXhr.status}`, "#ef4444");
-                    uploadBtn.disabled = false;
+
+                    statusBox.style.color =
+                        "red";
+
+                    statusBox.innerText =
+                        "❌ فشل الرفع";
+
+                    uploadBtn.disabled =
+                        false;
                 }
             };
 
-            uploadXhr.onerror = () => {
-                if(uploadCancelled) return;
-                setStatus("❌ خطأ بالشبكة أثناء الرفع", "#ef4444");
-                uploadBtn.disabled = false;
-            };
+            uploadXhr.onerror =
+                () => {
 
-            const body = JSON.stringify({
-                message: `Upload ${currentFileName}`,
-                content: base64,
-                branch: BRANCH
-            });
+                statusBox.style.color =
+                    "red";
+
+                statusBox.innerText =
+                    "❌ خطأ بالشبكة";
+
+                uploadBtn.disabled =
+                    false;
+            };
 
             uploadXhr.send(body);
 
         }catch(e){
+
             console.error(e);
-            setStatus("❌ حدث خطأ أثناء تجهيز الملف", "#ef4444");
-            uploadBtn.disabled = false;
+
+            statusBox.style.color =
+                "red";
+
+            statusBox.innerText =
+                "❌ حدث خطأ";
+
+            uploadBtn.disabled =
+                false;
         }
     };
 }
 
-/* Monitor workflow run by commit sha */
+/* Trigger GitHub Action */
 
-async function monitorWorkflow(commitSha){
-    processingBox.style.display = "block";
-    resultBox.style.display = "none";
-    setStatus("⚙️ مراقبة GitHub Actions...");
+async function triggerWorkflow(){
 
-    const outputName = currentFileName.replace(".pdf", "_clean.txt");
+    statusBox.innerText =
+        "⚙️ بدء المعالجة...";
+
+    await fetch(
+        `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/workflows/ocr.yml/dispatches`,
+        {
+            method:"POST",
+
+            headers:{
+                "Authorization":
+                `token ${GITHUB_TOKEN}`,
+
+                "Content-Type":
+                "application/json"
+            },
+
+            body:JSON.stringify({
+
+                ref:BRANCH,
+
+                inputs:{
+                    filename:
+                    currentFileName
+                }
+            })
+        }
+    );
+}
+
+/* Polling */
+
+function startPolling(){
+
+    processingBox.style.display =
+        "block";
+
+    const outputName =
+        currentFileName.replace(
+            ".pdf",
+            "_clean.txt"
+        );
 
     let attempts = 0;
 
-    if (monitorInterval) {
-        clearInterval(monitorInterval);
-    }
+    const interval =
+        setInterval(
+            async () => {
 
-    monitorInterval = setInterval(async () => {
-        attempts++;
+            attempts++;
 
-        if (uploadCancelled) {
-            clearInterval(monitorInterval);
-            return;
-        }
+            statusBox.style.color =
+                "#2563eb";
 
-        try{
-            const url = commitSha
-                ? `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/runs?head_sha=${commitSha}&per_page=10`
-                : `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/actions/runs?per_page=10`;
+            statusBox.innerText =
+                `⏳ انتظار النتيجة... (${attempts})`;
 
-            const runsResponse = await fetch(url, {
-                headers: {
-                    "Authorization": `token ${GITHUB_TOKEN}`,
-                    "Accept": "application/vnd.github+json"
+            try{
+
+                const response =
+                    await fetch(
+                        `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/output/${outputName}?t=${Date.now()}`
+                    );
+
+                if(response.ok){
+
+                    clearInterval(
+                        interval
+                    );
+
+                    const text =
+                        await response.text();
+
+                    document.getElementById(
+                        "outputBox"
+                    ).value =
+                        text;
+
+                    resultBox.style.display =
+                        "block";
+
+                    processingBox.style.display =
+                        "none";
+
+                    statusBox.style.color =
+                        "#22c55e";
+
+                    statusBox.innerText =
+                        "✅ اكتملت المعالجة";
+
+                    uploadBtn.disabled =
+                        false;
                 }
-            });
 
-            if(!runsResponse.ok){
-                setStatus(`⚙️ مراقبة Actions... (${runsResponse.status})`);
-                return;
+            }catch(e){
+
+                console.log(e);
             }
 
-            const runsData = await runsResponse.json();
+            // timeout بعد 10 دقائق
+            if(attempts > 120){
 
-            if(!runsData.workflow_runs || runsData.workflow_runs.length === 0){
-                setStatus("⏳ تم الرفع... بانتظار بدء GitHub Actions");
-                return;
+                clearInterval(
+                    interval
+                );
+
+                processingBox.style.display =
+                    "none";
+
+                statusBox.style.color =
+                    "red";
+
+                statusBox.innerText =
+                    "❌ انتهى وقت الانتظار";
+
+                uploadBtn.disabled =
+                    false;
             }
 
-            const run =
-                runsData.workflow_runs.find(r => r.path === `.github/workflows/${WORKFLOW_FILE}`) ||
-                runsData.workflow_runs.find(r => r.name === "Extract and Fix Arabic PDFs") ||
-                runsData.workflow_runs[0];
-
-            if(!run){
-                setStatus("⏳ لا يوجد run مناسب بعد");
-                return;
-            }
-
-            const workflowStatus = run.status;
-            const workflowConclusion = run.conclusion;
-
-            setStatus(`⚙️ Workflow: ${workflowStatus}`);
-
-            if(workflowStatus === "completed" && workflowConclusion === "failure"){
-                clearInterval(monitorInterval);
-                processingBox.style.display = "none";
-                setStatus("❌ فشلت المعالجة داخل GitHub Actions", "#ef4444");
-                uploadBtn.disabled = false;
-                return;
-            }
-
-            if(workflowStatus === "completed" && workflowConclusion === "success"){
-                clearInterval(monitorInterval);
-                setStatus("📥 اكتمل الـ workflow... جاري جلب الملف الناتج", "#2563eb");
-                await fetchResultText(outputName);
-                return;
-            }
-
-        }catch(error){
-            console.error(error);
-        }
-
-        if(attempts > 180){
-            clearInterval(monitorInterval);
-            processingBox.style.display = "none";
-            setStatus("❌ انتهى وقت الانتظار", "#ef4444");
-            uploadBtn.disabled = false;
-        }
-
-    }, 5000);
-}
-
-/* Fetch result from GitHub Contents API */
-
-async function fetchResultText(outputName){
-    const maxRetries = 20;
-    let tries = 0;
-
-    const tryFetch = async () => {
-        tries++;
-
-        try{
-            const response = await fetch(
-                `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/output/${outputName}?ref=${BRANCH}`,
-                {
-                    headers: {
-                        "Authorization": `token ${GITHUB_TOKEN}`,
-                        "Accept": "application/vnd.github+json"
-                    }
-                }
-            );
-
-            if(response.ok){
-                const data = await response.json();
-
-                if(data && data.content && data.encoding === "base64"){
-                    const text = base64ToUtf8(data.content);
-
-                    document.getElementById("outputBox").value = text;
-                    resultBox.style.display = "block";
-                    processingBox.style.display = "none";
-                    setStatus("✅ تم استخراج النص", "#22c55e");
-                    uploadBtn.disabled = false;
-                    return;
-                }
-            }
-
-            if(tries < maxRetries){
-                setStatus(`⏳ الملف الناتج لم يظهر بعد... محاولة ${tries}/${maxRetries}`);
-                setTimeout(tryFetch, 3000);
-            }else{
-                processingBox.style.display = "none";
-                setStatus("❌ تم إنهاء المعالجة لكن ملف TXT لم يظهر بعد", "#ef4444");
-                uploadBtn.disabled = false;
-            }
-
-        }catch(error){
-            console.error(error);
-
-            if(tries < maxRetries){
-                setTimeout(tryFetch, 3000);
-            }else{
-                processingBox.style.display = "none";
-                setStatus("❌ تعذر جلب النتيجة", "#ef4444");
-                uploadBtn.disabled = false;
-            }
-        }
-    };
-
-    await tryFetch();
+        },5000);
 }
 
 /* Copy */
 
 function copyText(){
-    const text = document.getElementById("outputBox").value;
 
-    navigator.clipboard.writeText(text);
-    alert("📋 تم النسخ");
-}
+    const text =
+        document.getElementById(
+            "outputBox"
+        ).value;
 
-/* Optional cancel */
+    navigator.clipboard.writeText(
+        text
+    );
 
-function cancelUpload(){
-    uploadCancelled = true;
-
-    if(uploadXhr){
-        uploadXhr.abort();
-    }
-
-    if(monitorInterval){
-        clearInterval(monitorInterval);
-    }
-
-    processingBox.style.display = "none";
-    setStatus("❌ تم إلغاء العملية", "#ef4444");
-    uploadBtn.disabled = false;
+    alert(
+        "📋 تم النسخ"
+    );
 }
 
 </script>
